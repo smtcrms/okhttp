@@ -70,8 +70,8 @@ public final class HttpLoggingInterceptorTest {
       new HttpLoggingInterceptor(applicationLogs);
 
   private void setLevel(Level level) {
-    networkInterceptor.setLevel(level);
-    applicationInterceptor.setLevel(level);
+    networkInterceptor.level(level);
+    applicationInterceptor.level(level);
   }
 
   @Before public void setUp() {
@@ -92,14 +92,14 @@ public final class HttpLoggingInterceptorTest {
     assertThat(applicationInterceptor.getLevel()).isEqualTo(Level.NONE);
 
     for (Level level : Level.values()) {
-      applicationInterceptor.setLevel(level);
+      applicationInterceptor.level(level);
       assertThat(applicationInterceptor.getLevel()).isEqualTo(level);
     }
   }
 
   @Test public void setLevelShouldPreventNullValue() {
     try {
-      applicationInterceptor.setLevel(null);
+      applicationInterceptor.level(null);
       fail();
     } catch (IllegalArgumentException expected) {
     }
@@ -107,7 +107,8 @@ public final class HttpLoggingInterceptorTest {
 
   @Test public void setLevelShouldReturnSameInstanceOfInterceptor() {
     for (Level level : Level.values()) {
-      assertThat(applicationInterceptor.setLevel(level)).isSameAs(applicationInterceptor);
+      applicationInterceptor.level(level);
+      assertThat(applicationInterceptor).isSameAs(applicationInterceptor);
     }
   }
 
@@ -730,12 +731,12 @@ public final class HttpLoggingInterceptorTest {
 
   @Test
   public void headersAreRedacted() throws Exception {
-    HttpLoggingInterceptor networkInterceptor =
-        new HttpLoggingInterceptor(networkLogs).setLevel(Level.HEADERS);
+    HttpLoggingInterceptor networkInterceptor = new HttpLoggingInterceptor(networkLogs);
+    networkInterceptor.level(Level.HEADERS);
     networkInterceptor.redactHeader("sEnSiTiVe");
 
-    HttpLoggingInterceptor applicationInterceptor =
-        new HttpLoggingInterceptor(applicationLogs).setLevel(Level.HEADERS);
+    HttpLoggingInterceptor applicationInterceptor = new HttpLoggingInterceptor(applicationLogs);
+    applicationInterceptor.level(Level.HEADERS);
     applicationInterceptor.redactHeader("sEnSiTiVe");
 
     client =

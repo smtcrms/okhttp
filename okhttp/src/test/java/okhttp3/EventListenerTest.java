@@ -1116,9 +1116,11 @@ public final class EventListenerTest {
   @Test public void successfulCallEventSequenceWithListener() throws IOException {
     server.enqueue(new MockResponse().setBody("abc"));
 
+    HttpLoggingInterceptor networkLoggingInterceptor = new HttpLoggingInterceptor();
+    networkLoggingInterceptor.level(HttpLoggingInterceptor.Level.BODY);
+
     client = client.newBuilder()
-        .addNetworkInterceptor(new HttpLoggingInterceptor()
-            .setLevel(HttpLoggingInterceptor.Level.BODY))
+        .addNetworkInterceptor(networkLoggingInterceptor)
         .build();
     Call call = client.newCall(new Request.Builder()
         .url(server.url("/"))
